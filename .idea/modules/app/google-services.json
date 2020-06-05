@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "327616393429",
+    "firebase_url": "https://plan-reminder-68792.firebaseio.com",
+    "project_id": "plan-reminder-68792",
+    "storage_bucket": "plan-reminder-68792.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327616393429:android:2ada484b4271f3b72d325c",
+        "android_client_info": {
+          "package_name": "com.example.plan_reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327616393429-lqgc1t8ha35b3tluesadjah01glpjk1c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.plan_reminder",
+            "certificate_hash": "080529cf2dda283b104713cadcc598e625c04896"
+          }
+        },
+        {
+          "client_id": "327616393429-7g6dcr7om10ovnaj3nm2mfanbaagrg6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnSnIrZ017SqL9WIqfaSMf4cVIMHfLnz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327616393429-7g6dcr7om10ovnaj3nm2mfanbaagrg6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
