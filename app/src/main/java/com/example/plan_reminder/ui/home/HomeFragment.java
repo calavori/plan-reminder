@@ -29,8 +29,6 @@ import java.util.HashSet;
 public class HomeFragment extends Fragment {
 
     LinearLayout header;
-    ImageView btnPrev;
-    ImageView btnNext;
     TextView txtDateDay;
     TextView txtDisplayDate;
     TextView txtDateYear;
@@ -43,38 +41,42 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         header = view.findViewById(R.id.calendar_header);
-        btnPrev = view.findViewById(R.id.calendar_prev_button);
-        btnNext = view.findViewById(R.id.calendar_next_button);
         txtDateDay = view.findViewById(R.id.date_display_day);
         txtDateYear = view.findViewById(R.id.date_display_year);
         txtDisplayDate = view.findViewById(R.id.date_display_date);
         gridView = view.findViewById(R.id.calendar_grid);
 
-        showCalendar();
+        showCalendar(getDaysDisplay());
+
         return view;
     }
 
-    public void showCalendar(){
-        ArrayList<Date> cells = new ArrayList<>();
-        Calendar currentDate = Calendar.getInstance();
-        Calendar calendar = (Calendar)currentDate.clone();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 2;
-        calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);
-        while (cells.size() < 35)
-        {
-            cells.add(calendar.getTime());
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
+    public void showCalendar(ArrayList<Date> days){
         // update grid
-        gridView.setAdapter(new CalendarAdapter(getContext(), cells));
+        gridView.setAdapter(new CalendarAdapter(getContext(), days));
 
+        Calendar currentDate = Calendar.getInstance();
         // update title
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE,d MMM,yyyy");
         String[] dateToday = sdf.format(currentDate.getTime()).split(",");
         txtDateDay.setText(dateToday[0]);
         txtDisplayDate.setText(dateToday[1]);
         txtDateYear.setText(dateToday[2]);
+    }
+
+    public ArrayList<Date> getDaysDisplay(){
+        ArrayList<Date> days = new ArrayList<>();
+        Calendar currentDate = Calendar.getInstance();
+        Calendar calendar = (Calendar)currentDate.clone();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);
+        while (days.size() < 35)
+        {
+            days.add(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return days;
     }
 
 

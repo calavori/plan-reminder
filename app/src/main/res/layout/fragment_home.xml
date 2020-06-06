@@ -20,8 +20,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginRight="40dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow_left"/>
+            android:layout_centerVertical="true"/>
 
         <LinearLayout
             android:id="@+id/date_display"
@@ -72,8 +71,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="40dp"
             android:layout_toEndOf="@id/date_display"
-            android:layout_toRightOf="@id/date_display"
-            android:src="@drawable/ic_arrow_right"/>
+            android:layout_toRightOf="@id/date_display"/>
     </RelativeLayout>
 
     <!-- days header -->
