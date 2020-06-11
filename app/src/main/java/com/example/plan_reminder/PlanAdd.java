@@ -33,11 +33,15 @@ public class PlanAdd extends Fragment {
     EditText input_time_start;
     EditText input_time_end;
     EditText input_description;
-    Calendar dateCalendar = Calendar.getInstance();
-    Calendar timeCalendar1 = Calendar.getInstance();
-    Calendar timeCalendar2 = Calendar.getInstance();
     Button btn_add;
-    FirebaseDatabase database;
+
+
+    Calendar timeCalendar1 = Calendar.getInstance();
+    Calendar timeCalendar2 = (Calendar)timeCalendar1.clone();
+    Plan plan;
+    FirebaseHandle firebaseHandle;
+
+
     FirebaseAuth auth;
     FirebaseUser user;
 
@@ -46,7 +50,7 @@ public class PlanAdd extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_plan_add, container, false);
+        final View view = inflater.inflate(R.layout.fragment_plan_add, container, false);
 
         //create datepicker and timepicker
         create_date_picker(view);
@@ -57,19 +61,23 @@ public class PlanAdd extends Fragment {
         input_title = (EditText) view.findViewById(R.id.input_title);
         input_description = (EditText) view.findViewById(R.id.input_description);
 
-        database = FirebaseDatabase.getInstance();
+
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        firebaseHandle = new FirebaseHandle();
 
         btn_add.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 String title = input_title.getText().toString();
-                String date = input_date.getText().toString();
-                String start_time = input_time_start.getText().toString();
-                String end_time = input_time_end.getText().toString();
                 String description = input_description.getText().toString();
+                plan = new Plan(user.getUid(), title, timeCalendar1, timeCalendar2, description);
+                try{
+                    firebaseHandle.addDB(plan);
+                } catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
 
             }
         });
@@ -90,17 +98,21 @@ public class PlanAdd extends Fragment {
     private void create_date_picker(View view) {
         final DatePickerDialog.OnDateSetListener date;
         input_date = (EditText) view.findViewById(R.id.input_date);
-        updateDateLabel(dateCalendar);
+        updateDateLabel(timeCalendar1);
         date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                dateCalendar.set(Calendar.YEAR, year);
-                dateCalendar.set(Calendar.MONTH, monthOfYear);
-                dateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDateLabel(dateCalendar);
+                timeCalendar1.set(Calendar.YEAR, year);
+                timeCalendar1.set(Calendar.MONTH, monthOfYear);
+                timeCalendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateDateLabel(timeCalendar1);
+
+                timeCalendar2.set(Calendar.YEAR, year);
+                timeCalendar2.set(Calendar.MONTH, monthOfYear);
+                timeCalendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             }
 
         };
@@ -110,9 +122,9 @@ public class PlanAdd extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new DatePickerDialog(getContext(), date, dateCalendar
-                        .get(Calendar.YEAR), dateCalendar.get(Calendar.MONTH),
-                        dateCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(getContext(), date, timeCalendar1
+                        .get(Calendar.YEAR), timeCalendar1.get(Calendar.MONTH),
+                        timeCalendar1.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
     }
