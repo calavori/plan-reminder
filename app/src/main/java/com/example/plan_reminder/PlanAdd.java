@@ -5,6 +5,8 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -73,6 +75,8 @@ public class PlanAdd extends Fragment {
                 String title = input_title.getText().toString();
                 String description = input_description.getText().toString();
                 plan = new Plan(user.getUid(), title, timeCalendar1, timeCalendar2, description);
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                navController.popBackStack();
                 try{
                     firebaseHandle.addDB(plan);
                 } catch (Exception e){

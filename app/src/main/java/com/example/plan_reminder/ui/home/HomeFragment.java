@@ -16,8 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.example.plan_reminder.MainActivity;
 import com.example.plan_reminder.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.text.SimpleDateFormat;
@@ -33,6 +37,7 @@ public class HomeFragment extends Fragment {
     TextView txtDisplayDate;
     TextView txtDateYear;
     GridView gridView;
+    FloatingActionButton fab;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,6 +50,15 @@ public class HomeFragment extends Fragment {
         txtDateYear = view.findViewById(R.id.date_display_year);
         txtDisplayDate = view.findViewById(R.id.date_display_date);
         gridView = view.findViewById(R.id.calendar_grid);
+        fab = view.findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                navController.navigate(R.id.nav_plan_add);
+            }
+        });
 
         showCalendar(getDaysDisplay());
 
