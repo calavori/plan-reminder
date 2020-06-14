@@ -26,18 +26,18 @@ import java.util.Calendar;
 import java.util.Locale;
 
 
-public class PlanAdd extends Fragment {
+public class PlanEdit extends Fragment {
 
     EditText input_title;
     EditText input_date;
     EditText input_time_start;
     EditText input_time_end;
     EditText input_description;
-    Button btn_add;
+    Button btn_edit;
 
 
-    Calendar timeCalendar1 = Calendar.getInstance();
-    Calendar timeCalendar2 = (Calendar)timeCalendar1.clone();
+    Calendar timeCalendar1;
+    Calendar timeCalendar2;
     Plan plan;
     FirebaseHandle firebaseHandle;
 
@@ -50,23 +50,29 @@ public class PlanAdd extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_plan_add, container, false);
+        final View view = inflater.inflate(R.layout.fragment_plan_edit, container, false);
+        btn_edit = (Button) view.findViewById(R.id.btn_Edit);
+        input_title = (EditText) view.findViewById(R.id.input_title);
+        input_description = (EditText) view.findViewById(R.id.input_description);
+
+        if(getArguments() != null) {
+             plan = (Plan) getArguments().getParcelable("arg_plan");
+        }
+        displayArgToView(view);
+
 
         //create datepicker and timepicker
         create_date_picker(view);
         create_start_time_picker(view);
         create_end_time_picker(view);
 
-        btn_add = (Button) view.findViewById(R.id.btn_Add);
-        input_title = (EditText) view.findViewById(R.id.input_title);
-        input_description = (EditText) view.findViewById(R.id.input_description);
 
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         firebaseHandle = new FirebaseHandle(user.getUid());
 
-        btn_add.setOnClickListener(new View.OnClickListener() {
+        btn_edit.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -77,20 +83,13 @@ public class PlanAdd extends Fragment {
 
                 final ProgressDialog progressDialog = new ProgressDialog(view.getContext());
                 progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Adding");
+                progressDialog.setMessage("Editing");
                 progressDialog.show();
                 try{
                     new android.os.Handler().postDelayed(
                             new Runnable() {
                                 public void run() {
-                                    firebaseHandle.addDB(plan, new ICallback() {
-                                        @Override
-                                        public void onCallback(Object data) {
-                                            if(!(boolean)data){
-                                                Toast.makeText(view.getContext(), "A plan is already set in this time, please try again", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
+
                                     progressDialog.dismiss();
                                 }
                             }, 3000);
@@ -216,6 +215,20 @@ public class PlanAdd extends Fragment {
         input_time_end.setText(time);
     }
 
+    private void displayArgToView(View view){
+        input_title.setText(plan.getTitle());
+        input_description.setText(plan.getDescription());
+        timeCalendar1 = Calendar.getInstance();
+        timeCalendar2 = (Calendar) timeCalendar1.clone();
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.US);
+        try{
+            timeCalendar1.setTime(format.parse(plan.getDate() + " " + plan.getStart()));
+            timeCalendar2.setTime(format.parse(plan.getDate() + " " + plan.getEnd()));
+        } catch (Exception e) {
+            Toast.makeText(view.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
 
 }
 

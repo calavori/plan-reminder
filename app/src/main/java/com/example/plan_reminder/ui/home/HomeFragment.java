@@ -19,9 +19,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.plan_reminder.FirebaseHandle;
 import com.example.plan_reminder.MainActivity;
 import com.example.plan_reminder.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import java.text.SimpleDateFormat;
@@ -38,6 +41,10 @@ public class HomeFragment extends Fragment {
     TextView txtDateYear;
     GridView gridView;
     FloatingActionButton fab;
+    FirebaseAuth auth;
+    FirebaseUser user;
+
+    FirebaseHandle firebaseHandle;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,6 +66,10 @@ public class HomeFragment extends Fragment {
                 navController.navigate(R.id.nav_plan_add);
             }
         });
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        firebaseHandle = new FirebaseHandle(user.getUid());
 
         showCalendar(getDaysDisplay());
 

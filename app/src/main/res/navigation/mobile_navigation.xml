@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/nav_plan_show"
-        android:name="com.example.plan_reminder.ui.gallery.PlanShowFragment"
+        android:name="com.example.plan_reminder.ui.PlanShow.PlanShowFragment"
         android:label="Plans"
         tools:layout="@layout/fragment_plan_show" />
 
@@ -28,4 +28,10 @@
         android:name="com.example.plan_reminder.PlanAdd"
         android:label="Add New Plan"
         tools:layout="@layout/fragment_plan_add" />
+
+    <fragment
+        android:id="@+id/nav_plan_edit"
+        android:name="com.example.plan_reminder.PlanEdit"
+        android:label="Edit Plan"
+        tools:layout="@layout/fragment_plan_edit" />
 </navigation>
