@@ -1,5 +1,7 @@
 package com.example.plan_reminder.ui.home;
 
+import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
@@ -43,6 +48,8 @@ public class HomeFragment extends Fragment {
     FloatingActionButton fab;
     FirebaseAuth auth;
     FirebaseUser user;
+    List<Calendar> events;
+
 
     FirebaseHandle firebaseHandle;
 
@@ -71,14 +78,48 @@ public class HomeFragment extends Fragment {
         user = auth.getCurrentUser();
         firebaseHandle = new FirebaseHandle(user.getUid());
 
-        showCalendar(getDaysDisplay());
+
+        getEventDates(view);
+//        showCalendar(getDaysDisplay(), events);
+        for (Calendar e : events){
+            Toast.makeText(getContext(), e.MONTH, Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
 
-    public void showCalendar(ArrayList<Date> days){
+    private void getEventDates(View view) {
+        final List<String> datelist = firebaseHandle.getAllDate();
+        final ProgressDialog progressDialog = new ProgressDialog(view.getContext());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Loading Data");
+        progressDialog.show();
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                         progressDialog.dismiss();
+                         events = getEventCal(datelist);
+                    }
+                }, 3000);
+    }
+
+    private List<Calendar> getEventCal(List<String> datelist) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+        List<Calendar> listCal = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        for (String str : datelist){
+            try{
+                cal.setTime(sdf.parse(str));
+                listCal.add(cal);
+            } catch (Exception e) {}
+        }
+        return listCal;
+    }
+
+
+    public void showCalendar(ArrayList<Date> days, List<Calendar> events){
         // update grid
-        gridView.setAdapter(new CalendarAdapter(getContext(), days));
+        gridView.setAdapter(new CalendarAdapter(getContext(), days, events));
 
         Calendar currentDate = Calendar.getInstance();
         // update title

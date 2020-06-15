@@ -24,15 +24,17 @@ import java.util.zip.Inflater;
 class CalendarAdapter extends BaseAdapter {
     // for view inflation
     private List<Date> days;
+    private List<Calendar> events;
     private LayoutInflater inflater;
     private Context context;
 
 
-    public CalendarAdapter(Context context, ArrayList<Date> days)
+    public CalendarAdapter(Context context, ArrayList<Date> days, List<Calendar> events)
     {
         this.context = context;
         this.days = days;
         inflater = LayoutInflater.from(context);
+        this.events = events;
     }
     @Override
     public int getCount() {
@@ -78,6 +80,14 @@ class CalendarAdapter extends BaseAdapter {
         } else if (day == calendarToday.get(Calendar.DATE)) {
             view.setBackgroundResource(R.drawable.round_text);
         }
+
+        for (Calendar e : events){
+            if (month == e.MONTH && day == e.DATE){
+                textView.setTextColor(Color.parseColor("#FF0000"));
+                break;
+            }
+        }
+
 
         // set text
         textView.setText(String.valueOf(calendar.get(Calendar.DATE)));

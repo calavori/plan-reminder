@@ -38,8 +38,10 @@ public class PlanEdit extends Fragment {
 
     Calendar timeCalendar1;
     Calendar timeCalendar2;
+    Plan oldPlan;
     Plan plan;
     FirebaseHandle firebaseHandle;
+    Boolean edit_result;
 
 
     FirebaseAuth auth;
@@ -56,6 +58,7 @@ public class PlanEdit extends Fragment {
         input_description = (EditText) view.findViewById(R.id.input_description);
 
         if(getArguments() != null) {
+             oldPlan = (Plan) getArguments().getParcelable("arg_plan");
              plan = (Plan) getArguments().getParcelable("arg_plan");
         }
         displayArgToView(view);
@@ -65,6 +68,7 @@ public class PlanEdit extends Fragment {
         create_date_picker(view);
         create_start_time_picker(view);
         create_end_time_picker(view);
+
 
 
 
@@ -81,28 +85,11 @@ public class PlanEdit extends Fragment {
 
                 plan = new Plan(user.getUid(), title, timeCalendar1, timeCalendar2, description);
 
-                final ProgressDialog progressDialog = new ProgressDialog(view.getContext());
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Editing");
-                progressDialog.show();
-                try{
-                    new android.os.Handler().postDelayed(
-                            new Runnable() {
-                                public void run() {
-
-                                    progressDialog.dismiss();
-                                }
-                            }, 3000);
-
-
-                    final NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                    navController.popBackStack();
-                } catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
+                firebaseHandle.editPlan(oldPlan, plan, view, getActivity());
 
             }
         });
+
 
         return view;
     }

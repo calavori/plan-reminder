@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.plan_reminder.FirebaseHandle;
@@ -28,6 +29,7 @@ import com.example.plan_reminder.ICallback;
 import com.example.plan_reminder.Plan;
 import com.example.plan_reminder.PlanListAdapter;
 import com.example.plan_reminder.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -63,6 +65,7 @@ public class PlanShowFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         firebaseHandle = new FirebaseHandle(user.getUid());
+
 
         initialSpinner(spinner, view);
 

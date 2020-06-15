@@ -25,7 +25,7 @@ public class Plan implements Parcelable {
         String myFormat = "MM-dd-yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         this.date =  sdf.format(start.getTime());
-        sdf = new SimpleDateFormat("kk:mm");
+        sdf = new SimpleDateFormat("HH:mm");
         this.start = sdf.format(start.getTime());
         this.end = sdf.format(end.getTime());
         this.description = description;
