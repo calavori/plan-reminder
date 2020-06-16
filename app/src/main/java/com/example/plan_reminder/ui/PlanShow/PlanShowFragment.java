@@ -65,7 +65,10 @@ public class PlanShowFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+
+
         firebaseHandle = new FirebaseHandle(user.getUid());
+        firebaseHandle.removeExpirePlan();
 
         String arg_date = null;
         if(getArguments() != null) {

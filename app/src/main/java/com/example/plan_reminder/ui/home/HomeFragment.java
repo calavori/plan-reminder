@@ -61,6 +61,12 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        firebaseHandle = new FirebaseHandle(user.getUid());
+        firebaseHandle.removeExpirePlan();
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         header = view.findViewById(R.id.calendar_header);
@@ -78,9 +84,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        firebaseHandle = new FirebaseHandle(user.getUid());
 
 
         getEventDates(view);

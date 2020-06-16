@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         //crate navigator view
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);

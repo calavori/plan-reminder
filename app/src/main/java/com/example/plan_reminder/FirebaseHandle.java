@@ -146,6 +146,63 @@ public class FirebaseHandle {
 
     }
 
+    public void removeExpirePlan(){
+        final DatabaseReference dir = database.child(user);
+        final Calendar today = Calendar.getInstance();
+
+        dir.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot child: snapshot.getChildren()){
+                    Calendar cal = Calendar.getInstance();
+                    String key = child.getKey();
+                    SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+                    try{
+                        cal.setTime(format.parse(key));
+                    } catch (Exception e){}
+                    if (today.get(Calendar.DATE) > cal.get(Calendar.DATE) && today.get(Calendar.MONTH) == cal.get(Calendar.MONTH) && today.get(Calendar.YEAR) == cal.get(Calendar.YEAR)){
+                        dir.child(key).removeValue();
+                    } else if (today.get(Calendar.MONTH) > cal.get(Calendar.MONTH) && today.get(Calendar.YEAR) == cal.get(Calendar.YEAR)){
+                        dir.child(key).removeValue();
+                    } else if (today.get(Calendar.YEAR) > cal.get(Calendar.YEAR)){
+                        dir.child(key).removeValue();
+                    } else if (today.get(Calendar.DATE) == cal.get(Calendar.DATE) && today.get(Calendar.MONTH) == cal.get(Calendar.MONTH) && today.get(Calendar.YEAR) == cal.get(Calendar.YEAR)){
+                        final DatabaseReference dir2 = dir.child(key);
+                        dir2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                for (DataSnapshot child: snapshot.getChildren()){
+                                    Calendar cal = Calendar.getInstance();
+                                    String key = child.getKey();
+                                    SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.US);
+                                    try{
+                                        cal.setTime(format.parse(key));
+                                    } catch (Exception e){}
+                                    if (today.get(Calendar.HOUR) > cal.get(Calendar.HOUR)){
+                                        dir2.child(key).removeValue();
+                                    } else if (today.get(Calendar.MINUTE) > cal.get(Calendar.MINUTE) && today.get(Calendar.HOUR) == cal.get(Calendar.HOUR)){
+                                        dir2.child(key).removeValue();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 
 
 
