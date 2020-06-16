@@ -12,9 +12,5 @@
             android:id="@+id/nav_plan_show"
             android:icon="@mipmap/ic_plan_list"
             android:title="Plan" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
     </group>
 </menu>

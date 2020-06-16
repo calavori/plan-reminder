@@ -3,6 +3,7 @@ package com.example.plan_reminder.ui.PlanShow;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -66,9 +67,12 @@ public class PlanShowFragment extends Fragment {
         user = auth.getCurrentUser();
         firebaseHandle = new FirebaseHandle(user.getUid());
 
+        String arg_date = null;
+        if(getArguments() != null) {
+            arg_date = (String) getArguments().getString("arg_choose_date");
+        }
 
-        initialSpinner(spinner, view);
-
+        initialSpinner(spinner, view, arg_date);
 
         return view;
     }
@@ -83,22 +87,14 @@ public class PlanShowFragment extends Fragment {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        listView.setAdapter(new PlanListAdapter(view.getContext(), planList));
-//                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//                            @Override
-//                            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-//                                Object obj = listView.getItemAtPosition(position);
-//                                Plan plan = (Plan) obj;
-//                                Toast.makeText(view.getContext(), plan.getTitle(), Toast.LENGTH_LONG).show();
-//                            }
-//                        });
+                        PlanListAdapter adapter = new PlanListAdapter(view.getContext(), planList);
+                        listView.setAdapter(adapter);
                         progressDialog.dismiss();
                     }
                 }, 3000);
     }
 
-    public void initialSpinner(final Spinner spinner, final View view) {
+    public void initialSpinner(final Spinner spinner, final View view, final String choose) {
         datelist = firebaseHandle.getAllDate();
 
         final ProgressDialog progressDialog = new ProgressDialog(view.getContext());
@@ -111,7 +107,11 @@ public class PlanShowFragment extends Fragment {
                         spinnerAdapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, datelist);
                         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinner.setAdapter(spinnerAdapter);
-                        spinnerAdapter.notifyDataSetChanged();
+                        if(choose != null){
+                            int spinnerPosition = spinnerAdapter.getPosition(choose);
+                            spinner.setSelection(spinnerPosition);
+                        }
+//                        spinnerAdapter.notifyDataSetChanged();
                         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                             @Override
@@ -120,7 +120,6 @@ public class PlanShowFragment extends Fragment {
                                 // TODO Auto-generated method stub
                                 String date = parent.getItemAtPosition(postion).toString();
                                 initialListview(listView, view, date);
-
 
                             }
 
@@ -163,7 +162,7 @@ public class PlanShowFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int id) {
 //                            Toast.makeText(getActivity(), plan.getTitle(), Toast.LENGTH_SHORT).show();
                             firebaseHandle.deletePlan(plan.getDate(), plan.getStart());
-                            initialSpinner(spinner, info.targetView);
+                            initialSpinner(spinner, info.targetView, null);
                         }
                     })
                     .setNegativeButton("No", null)

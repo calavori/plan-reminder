@@ -79,25 +79,25 @@ public class PlanAdd extends Fragment {
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage("Adding");
                 progressDialog.show();
+                firebaseHandle.addDB(plan, new ICallback() {
+                    @Override
+                    public void onCallback(Object data) {
+                        if(!(boolean)data){
+                            Toast.makeText(view.getContext(), "A plan is already set in this time, please try again", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 try{
                     new android.os.Handler().postDelayed(
                             new Runnable() {
                                 public void run() {
-                                    firebaseHandle.addDB(plan, new ICallback() {
-                                        @Override
-                                        public void onCallback(Object data) {
-                                            if(!(boolean)data){
-                                                Toast.makeText(view.getContext(), "A plan is already set in this time, please try again", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
                                     progressDialog.dismiss();
+                                    final NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                                    navController.popBackStack();
                                 }
                             }, 3000);
 
 
-                    final NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                    navController.popBackStack();
                 } catch (Exception e){
                     System.out.println(e.getMessage());
                 }

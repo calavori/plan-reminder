@@ -3,10 +3,13 @@ package com.example.plan_reminder.ui.home;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -80,15 +84,42 @@ public class HomeFragment extends Fragment {
 
 
         getEventDates(view);
-//        showCalendar(getDaysDisplay(), events);
-        for (Calendar e : events){
-            Toast.makeText(getContext(), e.MONTH, Toast.LENGTH_SHORT).show();
-        }
+
+
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        showCalendar(getDaysDisplay(), events);
+                    }
+                }, 3000);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+                TextView textView = (TextView) v.findViewById(R.id.date_in_grid);
+                int color = textView.getCurrentTextColor(); //-65536
+                if (color == -65536){
+                    Date day = (Date) gridView.getItemAtPosition(position);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("arg_choose_date", sdf.format(day));
+                    Navigation.findNavController(getView()).navigate(R.id.nav_plan_show, bundle);
+                }
+                else {
+                    Toast.makeText(getContext(), "There is no plan in this day.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
         return view;
     }
 
-    private void getEventDates(View view) {
+
+
+    private void getEventDates(final View view) {
         final List<String> datelist = firebaseHandle.getAllDate();
         final ProgressDialog progressDialog = new ProgressDialog(view.getContext());
         progressDialog.setIndeterminate(true);
@@ -97,8 +128,9 @@ public class HomeFragment extends Fragment {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                         progressDialog.dismiss();
-                         events = getEventCal(datelist);
+                        progressDialog.dismiss();
+                        events = getEventCal(datelist);
+//                        Toast.makeText(view.getContext(), events.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }, 3000);
     }
@@ -106,12 +138,14 @@ public class HomeFragment extends Fragment {
     private List<Calendar> getEventCal(List<String> datelist) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
         List<Calendar> listCal = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
         for (String str : datelist){
             try{
+                Calendar cal = Calendar.getInstance();
                 cal.setTime(sdf.parse(str));
                 listCal.add(cal);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+
+            }
         }
         return listCal;
     }

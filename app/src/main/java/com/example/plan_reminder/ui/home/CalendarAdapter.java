@@ -82,7 +82,7 @@ class CalendarAdapter extends BaseAdapter {
         }
 
         for (Calendar e : events){
-            if (month == e.MONTH && day == e.DATE){
+            if (month == e.get(Calendar.MONTH) && day == e.get(Calendar.DATE)){
                 textView.setTextColor(Color.parseColor("#FF0000"));
                 break;
             }
